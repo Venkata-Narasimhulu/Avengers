@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body{
+        background-image: url(https://media.istockphoto.com/id/1448506100/photo/male-hotel-receptionist-assisting-female-guest.jpg?s=612x612&w=0&k=20&c=xXJn95XgzSA4_LgGczr7ce-FnpcWXwYIr-fGH9yN_z0=);
+        background-position: center;
+        background-size: cover;
+    }
+     h1 {
+        text-align: center;
+        color:mediumseagreen;
+    }
+
+    label {
+        display: block;
+        margin-top: 10px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+
+    #billing-form {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid Obrown;
+        border-radius: 5px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: DarkOrange;
+        color: rgb(240, 224, 224);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+     form {
+        background-color: rgba(236, 210, 210, 0.7); /* semi-transparent white background */
+        padding: 20px;
+        max-width: 300px;
+        margin: 0 auto;
+        border-radius: 10px;
+     }
+    
+     label {
+        font-weight: bold;
+     }
+    
+    
+     button[type="submit"] {
+        background-color: teal;
+        color: rgb(156, 187, 156);
+        padding: 10px 20px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+     }
+    
+     button[type="submit"]:hover {
+        background-color: teal;
+     }
+     h1{
+        font-family: Arial, sans-serif;
+        background-position: center;
+
+     }
+</style>
+}
+</head>
+<body>
+<form id="check" action="payment.html" method="post">
+<div class="container">
+    <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+
+    <label for="checkin"><b>Check-In Date</b></label>
+    <input type="date" name="checkin" id="checkin" required>
+
+    <label for="checkout"><b>Check-Out Date</b></label>
+    <input type="date" name="checkout" id="checkout" required>
+
+    <button type="submit" id="submit">Submit</button>    
+</div>
+</form>
+
+<script>
+document.getElementById("submit").addEventListener("click", function(){
+    var uname = document.getElementById("uname").value;
+    var checkin = document.getElementById("checkin").value;
+    var checkout = document.getElementById("checkout").value;
+
+    if(uname == "" || checkin == "" || checkout == ""){
+        alert("Please fill out all fields.");
+    } else if(checkin > checkout){
+        alert("Check-Out Date must be later than Check-In Date.");
+    } else {
+        alert("Check-In and Check-Out successful!");
+    }
+});
+</script>
+</body>
+</html>

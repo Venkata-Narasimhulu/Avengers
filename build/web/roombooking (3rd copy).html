@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Booking</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-image: url('4.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center center;
+      margin: 0;
+    }
+
+    .booking-form {
+      background-color: rgba(255, 255, 255, 0); /* Adjust the alpha channel for transparency */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+
+    .room-card {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 5px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .room-card.booked {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      cursor: not-allowed;
+    }
+
+    /* Style for room grid */
+    .room-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+	
+
+	 .btn {
+      position: relative;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 28px;
+      background: #7ed957;
+      border-top-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      transition: all 1s;
+    }
+
+    .btn:after,
+    .btn:before {
+      content: " ";
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      border: 0px solid #fff;
+      transition: all 1s;
+    }
+
+    .btn:after {
+      top: -1px;
+      left: -1px;
+      border-top: 5px solid black;
+      border-left: 5px solid black;
+    }
+
+    .btn:before {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 5px solid black;
+      border-right: 5px solid black;
+    }
+
+    .btn:hover {
+      border-top-right-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+
+    .btn:hover:before,
+    .btn:hover:after {
+      width: 100%;
+      height: 100%;
+    }
+
+    .data-container {
+      background: #EAEAEA;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script>
+    let bookedRooms = [];
+
+    function validateBookingForm() {
+      const numOfGuests = document.getElementById('numOfGuests').value;
+      const checkIn = document.getElementById('checkIn').value;
+      const checkOut = document.getElementById('checkOut').value;
+
+      // Check if the number of guests is greater than 0
+      if (numOfGuests <= 0) {
+        alert('Please select a valid number of guests.');
+        return false;
+      }
+
+      // Check if at least one room is selected
+      if (bookedRooms.length === 0) {
+        alert('Please select at least one room.');
+        return false;
+      }
+
+      // Check if check-in and check-out dates are entered and valid
+      const currentDate = new Date().toISOString().split('T')[0]; // Get today's date
+      if (!checkIn || !checkOut || checkIn < currentDate || checkIn >= checkOut) {
+        alert('Please enter valid check-in and check-out dates.');
+        return false;
+      }
+
+      // Check if Aadhar card numbers are entered for each guest
+      const aadharInputs = document.querySelectorAll('.aadhar-inputs input');
+      for (const input of aadharInputs) {
+        if (!input.value.trim()) {
+          alert('Please enter Aadhar card numbers for each guest.');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function bookRoom() {
+      if (!validateBookingForm()) {
+        return;
+      }
+
+      // Rest of the booking logic
+
+      alert('Booking successful!'); // Replace with actual booking logic
+    }
+
+    function generateAadharInputs() {
+      const numOfGuests = document.getElementById('numOfGuests').value;
+      const aadharInputsContainer = document.querySelector('.aadhar-inputs');
+      aadharInputsContainer.innerHTML = '';
+
+      for (let i = 0; i < numOfGuests; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Aadhar Card Number for Guest ${i + 1}`;
+        input.classList.add('form-control', 'mb-2');
+        aadharInputsContainer.appendChild(input);
+      }
+    }
+
+    function generateAvailableRooms() {
+      const availableRoomsContainer = document.getElementById('availableRoomsContainer');
+      availableRoomsContainer.innerHTML = '';
+
+      for (let i = 0; i < 5; i++) {
+        const roomRow = document.createElement('div');
+        roomRow.classList.add('room-row');
+
+        for (let j = 1; j <= 5; j++) {
+          const roomNumber = i * 10 + j;
+          const card = document.createElement('div');
+          card.classList.add('room-card');
+          card.textContent = `G${roomNumber.toString().padStart(3, '0')}`;
+          card.setAttribute('data-room-number', roomNumber);
+          card.onclick = () => selectRoom(card);
+          roomRow.appendChild(card);
+        }
+
+        availableRoomsContainer.appendChild(roomRow);
+      }
+
+      bookedRooms = [];
+    }
+
+    function selectRoom(card) {
+      const roomNumber = card.getAttribute('data-room-number');
+
+      if (!bookedRooms.includes(roomNumber)) {
+        bookedRooms.push(roomNumber);
+        card.classList.add('booked');
+      } else {
+        alert(`Room G${roomNumber} is already booked. Please select another room.`);
+      }
+    }
+
+    function updatePrice() {
+      const roomType = document.getElementById('roomType').value;
+      let roomPrice;
+
+      switch (roomType) {
+        case 'standard':
+          roomPrice = 1000;
+          break;
+        case 'deluxe':
+          roomPrice = 2000;
+          break;
+        case 'ultraDeluxe':
+          roomPrice = 5000;
+          break;
+        case 'luxury':
+          roomPrice = 20000;
+          break;
+        default:
+          roomPrice = 0;
+      }
+
+      document.getElementById('roomPrice').value = `₹${roomPrice}`;
+    }
+  </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hotel Management</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" >Rooms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="food.html">Food Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ch.html">Checkin and checkout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="file-vm4.html">Payments</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+<div class="container">
+  <div class="col-md-6 offset-md-3">
+    <div class="booking-form" action="RoomBookingServlet" method="post">
+      <h2 class="text-center mb-4">Room Booking</h2>
+
+      <div class="form-group">
+        <label for="numOfGuests">Number of Guests:</label>
+        <input type="number" id="numOfGuests" class="form-control" name="numOfGuests" onchange="generateAadharInputs(); updatePrice();">
+      </div>
+
+      <div class="form-group">
+        <label for="roomType" >Room Type:</label>
+        <select id="roomType" class="form-control" onchange="updatePrice()" name="roomType">
+          <option value="standard">Standard</option>
+          <option value="deluxe">Deluxe</option>
+          <option value="ultraDeluxe">Ultra Deluxe</option>
+          <option value="luxury">Luxury</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="availableRooms" >Available Rooms:</label>
+        <div class="available-rooms" id="availableRoomsContainer" ></div>
+      </div>
+
+      <div class="form-group">
+        <label for="checkIn">Check-In Date:</label>
+        <input type="date" id="checkIn" name="checkIn" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="checkOut">Check-Out Date:</label>
+        <input type="date" id="checkOut"  name="checkOut" class="form-control">
+      </div>
+
+      <div class="price-container">
+        <label for="roomPrice">Room Price:</label>
+        <input type="text" id="roomPrice" class="form-control" readonly>
+      </div>
+
+      <div class="aadhar-inputs">
+        <label for="aadharNumber">Aadhar Card Numbers:</label>
+        <!-- Aadhar card number inputs will be dynamically generated here -->
+      </div>
+
+      <button class="btn btn-primary btn-block mt-4" onclick="bookRoom()">Book Room</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+  generateAvailableRooms();
+</script>
+
+</body>
+</html>
+

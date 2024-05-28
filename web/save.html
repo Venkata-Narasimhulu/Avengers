@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Booking</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-image: url('4.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center center;
+      margin: 0;
+    }
+
+    .booking-form {
+      background-color: rgba(255, 255, 255, 0); /* Adjust the alpha channel for transparency */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+
+    .form-group label {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      border-radius: 5px;
+    }
+
+    .aadhar-inputs input {
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+
+    .available-rooms {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .room-card {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 5px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .room-card.booked {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      cursor: not-allowed;
+    }
+
+    .price-container {
+      margin-top: 10px;
+    }
+  </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+
+    .btn {
+      position: relative;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 28px;
+      background: #7ed957;
+      border-top-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      transition: all 1s;
+    }
+
+    .btn:after,
+    .btn:before {
+      content: " ";
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      border: 0px solid #fff;
+      transition: all 1s;
+    }
+
+    .btn:after {
+      top: -1px;
+      left: -1px;
+      border-top: 5px solid black;
+      border-left: 5px solid black;
+    }
+
+    .btn:before {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 5px solid black;
+      border-right: 5px solid black;
+    }
+
+    .btn:hover {
+      border-top-right-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+
+    .btn:hover:before,
+    .btn:hover:after {
+      width: 100%;
+      height: 100%;
+    }
+
+    .data-container {
+      background: #EAEAEA;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+    /* -- YouTube Link Styles -- */
+
+    #source-link {
+      top: 60px;
+    }
+
+    #source-link>i {
+      color: rgb(94, 106, 210);
+    }
+
+    #yt-link {
+      top: 10px;
+    }
+
+    #yt-link>i {
+      color: rgb(219, 31, 106);
+
+    }
+
+    .meta-link {
+      align-items: center;
+      backdrop-filter: blur(3px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      display: inline-flex;
+      gap: 5px;
+      left: 10px;
+      padding: 10px 20px;
+      position: fixed;
+      text-decoration: none;
+      transition: background-color 600ms, border-color 600ms;
+      z-index: 10000;
+    }
+
+    .meta-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .meta-link>i,
+    .meta-link>span {
+      height: 20px;
+      line-height: 20px;
+    }
+
+    .meta-link>span {
+      color: black;
+      font-family: "Rubik", sans-serif;
+      transition: color 600ms;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="col-md-6 offset-md-3">
+    <div class="booking-form">
+      <h2 class="text-center mb-4">Room Booking</h2>
+
+      <div class="form-group">
+        <label for="numOfGuests">Number of Guests:</label>
+        <input type="number" id="numOfGuests" class="form-control" onchange="generateAadharInputs(); updatePrice();">
+      </div>
+
+      <div class="form-group">
+        <label for="roomType">Room Type:</label>
+        <select id="roomType" class="form-control" onchange="updatePrice()">
+          <option value="standard">Standard</option>
+          <option value="deluxe">Deluxe</option>
+          <option value="ultraDeluxe">Ultra Deluxe</option>
+          <option value="luxury">Luxury</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="availableRooms">Available Rooms:</label>
+        <div class="available-rooms" id="availableRoomsContainer"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="checkIn">Check-In Date:</label>
+        <input type="date" id="checkIn" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="checkOut">Check-Out Date:</label>
+        <input type="date" id="checkOut" class="form-control">
+      </div>
+
+      <div class="price-container">
+        <label for="roomPrice">Room Price:</label>
+        <input type="text" id="roomPrice" class="form-control" readonly>
+      </div>
+
+      <div class="aadhar-inputs">
+        <label for="aadharNumber">Aadhar Card Numbers:</label>
+        <!-- Aadhar card number inputs will be dynamically generated here -->
+      </div>
+
+      <button class="btn btn-primary btn-block mt-4" onclick="bookRoom()">Book Room</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+  let bookedRooms = [];
+
+  function generateAadharInputs() {
+    const numOfGuests = document.getElementById('numOfGuests').value;
+    const aadharInputsContainer = document.querySelector('.aadhar-inputs');
+    aadharInputsContainer.innerHTML = '';
+
+    for (let i = 0; i < numOfGuests; i++) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = `Aadhar Card Number for Guest ${i + 1}`;
+      input.classList.add('form-control', 'mb-2');
+      aadharInputsContainer.appendChild(input);
+    }
+  }
+ 
+
+  function generateAvailableRooms() {
+    const availableRoomsContainer = document.getElementById('availableRoomsContainer');
+    availableRoomsContainer.innerHTML = '';
+
+    for (let i = 1; i <= 20; i++) {
+      const card = document.createElement('div');
+      card.classList.add('room-card');
+      card.textContent = `G${i.toString().padStart(2, '0')}`;
+      card.setAttribute('data-room-number', i);
+      card.onclick = () => selectRoom(card);
+      availableRoomsContainer.appendChild(card);
+    }
+
+    bookedRooms = [];
+  }
+
+  function selectRoom(card) {
+    const roomNumber = card.getAttribute('data-room-number');
+
+    if (!bookedRooms.includes(roomNumber)) {
+      bookedRooms.push(roomNumber);
+      card.classList.add('booked');
+    } else {
+      alert(`Room G${roomNumber} is already booked. Please select another room.`);
+    }
+  }
+
+  function updatePrice() {
+    const roomType = document.getElementById('roomType').value;
+    let roomPrice;
+
+    switch (roomType) {
+      case 'standard':
+        roomPrice = 1000;
+        break;
+      case 'deluxe':
+        roomPrice = 2000;
+        break;
+      case 'ultraDeluxe':
+        roomPrice = 5000;
+        break;
+      case 'luxury':
+        roomPrice = 20000;
+        break;
+      default:
+        roomPrice = 0;
+    }
+
+    document.getElementById('roomPrice').value = `₹${roomPrice}`;
+  }
+
+  function bookRoom() {
+    const numOfGuests = document.getElementById('numOfGuests').value;
+    const roomType = document.getElementById('roomType').value;
+    const checkIn = document.getElementById('checkIn').value;
+    const checkOut = document.getElementById('checkOut').value;
+    
+    
+    const aadharNumbers = [];
+    const aadharInputs = document.querySelectorAll('.aadhar-inputs input');
+    aadharInputs.forEach(input => {
+      aadharNumbers.push(input.value);
+    });
+
+    alert(`Room booked!\nNumber of Guests: ${numOfGuests}\nRoom Type: ${roomType}\nCheck-In: ${checkIn}\nCheck-Out: ${checkOut}\nAadhar Card Numbers: ${aadharNumbers.join(', ')}\nBooked Rooms: G${bookedRooms.join(', G')}\nTotal Price: ${document.getElementById('roomPrice').value}`);
+  }
+  
+
+
+
+</script>
+<!--
+<script>
+  function validateBookingForm() {
+      let numOfGuests = document.getElementById('numOfGuests').value;
+      let roomType = document.getElementById('roomType').value;
+      let checkIn = document.getElementById('checkIn').value;
+      let checkOut = document.getElementById('checkOut').value;
+      function selectRoom(card) {
+    const roomNumber = card.getAttribute('data-room-number');
+
+    if (!bookedRooms.includes(roomNumber)) {
+      bookedRooms.push(roomNumber);
+      card.classList.add('booked');
+    } else {
+      alert(`Room G${roomNumber} is already booked. Please select another room.`);
+    }
+  }
+      if (numOfGuests === '' || roomType === '' || checkIn === '' || checkOut === '') {
+          alert('Please fill all the required fields');
+          return false;
+      }
+
+      let currentDate = new Date();
+      let selectedCheckInDate = new Date(checkIn);
+      let selectedCheckOutDate = new Date(checkOut);
+
+      if (selectedCheckInDate < currentDate || selectedCheckOutDate < currentDate) {
+          alert('Check-in and Check-out dates cannot be in the past');
+          return false;
+      }
+
+      if (selectedCheckOutDate <= selectedCheckInDate) {
+          alert('Check-out date must be after Check-in date');
+          return false;
+      }
+
+      return true;
+  }
+
+  function bookRoom() {
+      if (validateBookingForm()) {
+          // Proceed with booking logic
+      }
+  }
+</script>-->
+</body>
+</html>
+

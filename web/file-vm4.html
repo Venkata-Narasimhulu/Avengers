@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVENGERS Billing System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy0Wxl4BIl5SUwMqOc4CkUnI5CAyGYYD3J" crossorigin="anonymous">
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-oMZYa5z8w2j+e+IdgRqOjmw2X9e3TJSXyZ+EBg4LMI4R3AcmF9yEVzO2N3FmwCr" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy0Wxl4BIl5SUwMqOc4CkUnI5CAyGYYD3J" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-image: url(https://media.istockphoto.com/id/1191193168/photo/tourist-registering-in-hotel.jpg?s=612x612&w=0&k=20&c=zE32OqoRtxG8eJdjkmm58bsduyAVtXj-ELnRgyvrqFc=);
+            background-position: center;
+            background-size: cover;
+        }
+
+        h1 {
+            text-align: center;
+            color: teal;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        #billing-form {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid brown; /* Corrected color name */
+            border-radius: 5px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: DarkOrange;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.7);
+            /* semi-transparent white background */
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        h1 {
+            font-family: Arial, sans-serif;
+            background-position: center;
+        }
+    </style>
+
+    
+</head>
+<body>
+    <h1 id="h1">AVENGERS Billing System</h1>
+    <form id="billing-form">
+        <label for="subscription">ROOM RENT:</label>
+        <input type="number" id="subscription" name="ROOM RENT" required>
+        <br>
+        <label for="billing-period">Billing Period:</label>
+        <select id="billing-period" name="billing-period" required>
+            <option value="">--Please choose an option--</option>
+            <option value="Monthly">PER DAY</option>
+            <option value="Yearly1">PER 2 DAYS</option>
+            <option value="Yearly2">PER 3 DAYS</option>
+            <option value="Yearly3">PER 4 DAYS</option>
+            <option value="Yearly4">PER 5 DAYS</option>
+            <option value="Yearly5">PER 6 DAYS</option>
+            <option value="Yearly6">PER WEEK</option>
+            <option value="Yearly7">PER MONTH</option>
+        </select>
+        <br>
+        <label for="extra-usage">FOOD:</label>
+        <input type="number" id="extra-usage" name="FOOD SERVICE">
+        <br>
+        <button type="submit">Calculate Bill</button>
+        <p id="result"></p>
+    </form>
+
+    <script>
+        const form = document.getElementById('billing-form');
+        const subscriptionInput = document.getElementById('subscription');
+        const billingPeriodInput = document.getElementById('billing-period');
+        const extraUsageInput = document.getElementById('extra-usage');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const subscription = parseFloat(subscriptionInput.value);
+            const billingPeriod = billingPeriodInput.value;
+            const extraUsage = parseFloat(extraUsageInput.value);
+
+            const bill = calculateBill(subscription, billingPeriod, extraUsage);
+            result.textContent = `Total Bill:$${bill.toFixed(2)} `;
+        });
+
+        function calculateBill(subscription, billingPeriod, extraUsage) {
+            let bill = subscription;
+
+            if (billingPeriod === 'Monthly') {
+                bill *= 1;
+            }
+
+            if (billingPeriod === 'Yearly1') {
+                bill *= 2;
+            }
+
+            if (billingPeriod === 'Yearly2') {
+                bill *= 3;
+            }
+
+            if (billingPeriod === 'Yearly3') {
+                bill *= 4;
+            }
+
+            if (billingPeriod === 'Yearly4') {
+                bill *= 5;
+            }
+
+            if (billingPeriod === 'Yearly5') {
+                bill *= 6;
+            }
+            if (billingPeriod === 'Yearly6') {
+                bill *= 7;
+            }
+            if (billingPeriod === 'Yearly7') {
+                bill *= 30;
+            }
+
+            if (extraUsage > 0) {
+                bill += extraUsage * 2;
+            }
+
+            return bill;
+        }
+    </script>
+</body>
+</html>
+
